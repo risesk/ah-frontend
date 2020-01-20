@@ -16,9 +16,11 @@ class App extends Component {
 
   componentDidMount() {
     const appData = JSON.parse(localStorage.getItem('appData'))
-    this.setState({
-      data: appData.data,
-      sort: appData.sort });
+    if (appData) {
+      this.setState({
+        data: appData.data,
+        sort: appData.sort });
+    }
   }
 
   onSort(sortField) {
