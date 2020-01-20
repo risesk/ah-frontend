@@ -1,6 +1,8 @@
 # ah-frontend
 
 ### Тестовое задание в AmazingHiring.
+
+Ссылка на gh-pages:  https://risesk.github.io/ah-frontend/
 ​
 ### Технологии:
 Проект написан на React, собран Webpack.
