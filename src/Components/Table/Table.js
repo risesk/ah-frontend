@@ -5,13 +5,20 @@ export const Table = (props) => {
 
     return(
 
-      <table className="table">
+      <table className='table'>
 
-        <thead className="table__header">
+        <thead className='table__header'>
           <tr>
 
             {Object.keys(props.data[0]).map( (columnName, i) => (
-                <th key={i} onClick={() => {props.onSort(columnName)} } className='table__title'>{columnName}</th>
+                <th key={i} onClick={ () => {props.onSort(columnName)} } className='table__title'>
+
+                  {columnName + ' ' }
+                  {props.sortColumnName !== columnName ? null :
+                    props.sort === 'asc' ? <span>&darr;</span> : <span>&uarr;</span>
+                  }
+
+                </th>
               ))
             }
 
