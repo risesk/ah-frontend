@@ -1,0 +1,26 @@
+.table {
+  margin: 0 auto;
+  width: 95%;
+  border-collapse: collapse;
+}
+
+.table__header {
+  border: 1px #bbb;
+  border-top: 3px solid #bbb;
+  border-bottom: 3px solid #bbb;
+}
+
+.table__title {
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 10px 0;
+}
+
+.table__cell {
+  font-size: 16px;
+  font-weight: normal;
+  padding: 5px;
+  border-top: 1px solid #bbb;
+  border-bottom: 1px solid #bbb;
+}
