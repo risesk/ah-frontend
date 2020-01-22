@@ -1,52 +1,42 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
 import './App.css';
-import { Table } from './Components/Table/Table'
+import { Table } from './Components/Table/Table';
+import {
+  getDataFromLocalStorage,
+  getDataFromGthubApi,
+  getErrorFromGthubApi,
+  sortData,
+} from './actions/TableActions'
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      data: [],
-      sort: '',  // 'asc' | 'desc'
-      sortColumnName: '',
-      error: null,
-      isLoaded: false,
-    };
     this.onSort = this.onSort.bind(this);
   }
 
   componentDidMount() {
     const appData = JSON.parse(localStorage.getItem('appData'))
     if (appData) {
-      return this.setState({
-        data: appData.data,
-        sort: appData.sort,
-        sortColumnName: appData.sortColumnName,
-        isLoaded: true
-      });
+      return this.props.getDataFromLocalStorage(appData);
     } else {
         fetch('https://raw.githubusercontent.com/blmzv/ah-frontend-intern/master/profiles.json')
           .then( res => res.json())
           .then(
             (res) => {
-              this.setState({
-                data: res,
-                isLoaded: true
-              });
+              this.props.getDataFromGthubApi(res);
             },
-            (error) => {
-              this.setState({
-                isLoaded: true,
-                error
-              });
-            });
+            (err) => {
+              this.props.getErrorFromGthubApi(err);
+            }
+          );
       }
   }
 
   onSort(sortField) {
-    const sort = this.state.sort === 'asc' ? 'desc' : 'asc';
+    const sort = this.props.sort === 'asc' ? 'desc' : 'asc';
     const data = this.sortProfiles(sortField, sort);
-    this.setState({ data, sort, sortColumnName: sortField });
+    this.props.sortData({ data, sort, sortField });
     localStorage.setItem('appData', JSON.stringify({
       data: data,
       sort: sort,
@@ -56,8 +46,8 @@ class App extends Component {
   }
 
   sortProfiles(sortField, sort) {
-    const cloneData = this.state.data.slice();
-    // Удаляем пробелы и скобки из сртируемого поля.
+    const cloneData = this.props.data.slice();
+    // Удаляем пробелы и скобки из сортируемого поля.
     const regExp = /[ \)\(]/g;
     const getSortParam = (profile) => {
       return profile[sortField].toLowerCase().replace(regExp, '');
@@ -73,7 +63,7 @@ class App extends Component {
   }
 
   render() {
-    const { error, isLoaded } = this.state;
+    const { error, isLoaded } = this.props;
     if (error) {
       return <div>Ошибка: {error.message}</div>;
     } else if (!isLoaded) {
@@ -84,9 +74,9 @@ class App extends Component {
           <h1 className='app__title'>Профили пользователей</h1>
           <p className='app__text'>Кликни на заголовок колонки, чтобы отсортировать таблицу</p>
           <Table
-            data={this.state.data}
-            sort={this.state.sort}
-            sortColumnName={this.state.sortColumnName}
+            data={this.props.data}
+            sort={this.props.sort}
+            sortColumnName={this.props.sortColumnName}
             onSort={this.onSort}
           />
         </div>
@@ -95,5 +85,20 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+   return {...state};
+
+};
+
+const mapDispatchToProps = {
+  getDataFromLocalStorage,
+  getDataFromGthubApi,
+  getErrorFromGthubApi,
+  sortData
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(App);
 
