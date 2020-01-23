@@ -1,26 +1,26 @@
 import {
-    GET_DATA_FROM_LOCAL_STORAGE,
-    GET_DATA_FROM_GITHUB_API,
-    GET_ERROR_FROM_GITHUB_API,
-    SORT_DATA
-  } from './actionsType';
+  GET_DATA_FROM_LOCAL_STORAGE,
+  GET_DATA_FROM_GITHUB_API,
+  GET_ERROR_FROM_GITHUB_API,
+  SORT_DATA,
+} from './actionsType';
 
-export const getDataFromLocalStorage = data => ({
+export const getDataFromLocalStorage = (data) => ({
   type: GET_DATA_FROM_LOCAL_STORAGE,
-  payload: data
+  payload: data,
 });
 
-export const getDataFromGthubApi = data => ({
+export const getDataFromGthubApi = (data) => ({
   type: GET_DATA_FROM_GITHUB_API,
-  payload: data
+  payload: data,
 });
 
-export const getErrorFromGthubApi = error => ({
+export const getErrorFromGthubApi = (error) => ({
   type: GET_ERROR_FROM_GITHUB_API,
-  payload: error
+  payload: error,
 });
 
-export const sortData = data => ({
+export const sortData = (data) => ({
   type: SORT_DATA,
-  payload: data
+  payload: data,
 });
