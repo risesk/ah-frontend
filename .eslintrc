@@ -1,0 +1,20 @@
+{
+  "extends": "airbnb-base",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "operator-linebreak": ["error", "after"],
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "warn"
+  },
+  "env": {
+    "browser": true
+  },
+  "plugins": [
+    "react"
+  ]
+}
