@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react';
+import PropTypes from 'prop-types';
 import './table.css';
 
 const Table = (props) => (
@@ -10,14 +11,13 @@ const Table = (props) => (
       <tr>
 
         {Object.keys(props.data[0]).map((columnName, i) => (
-            <th key={i} onClick={ () => { props.onSort(columnName); }} className='table__title'>
-
-              {`${columnName}`}
-              {props.sortColumnName !== columnName ? null :
-                props.sort === 'asc' ? <span>&darr;</span> : <span>&uarr;</span>
-              }
-
-            </th>
+          <th key={i} onClick={ () => props.onSort(columnName) } className='table__title'>
+            {`${columnName}`}
+            {props.sortColumnName === columnName
+              ? props.sortDirection === 'asc' ? <span>&darr;</span> : <span>&uarr;</span>
+              : null
+            }
+          </th>
         ))
         }
 
@@ -43,5 +43,12 @@ const Table = (props) => (
   </table>
 
 );
+
+Table.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.object),
+  sortDirection: PropTypes.oneOf(['asc', 'desc', '']),
+  sortColumnName: PropTypes.string,
+  onSort: PropTypes.func,
+};
 
 export default Table;

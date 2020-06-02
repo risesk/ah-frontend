@@ -1,13 +1,14 @@
+
 import {
-  GET_DATA_FROM_LOCAL_STORAGE,
-  GET_DATA_FROM_GITHUB_API,
-  GET_ERROR_FROM_GITHUB_API,
-  SORT_DATA,
+  SET_DATA_FROM_LOCAL_STORAGE,
+  SET_DATA_FROM_GITHUB_API,
+  SET_ERROR_FROM_GITHUB_API,
+  SET_SORTED_DATA,
 } from '../actions/actionsType';
 
 const initialstore = {
   data: [],
-  sort: '', // 'asc' | 'desc'
+  sortDirection: '',
   sortColumnName: '',
   error: null,
   isLoaded: false,
@@ -15,31 +16,31 @@ const initialstore = {
 
 const rootReducer = (state = initialstore, action) => {
   switch (action.type) {
-    case GET_DATA_FROM_LOCAL_STORAGE:
+    case SET_DATA_FROM_LOCAL_STORAGE:
       return {
         ...state,
         data: action.payload.data,
-        sort: action.payload.sort,
+        sortDirection: action.payload.sortDirection,
         sortColumnName: action.payload.sortColumnName,
         isLoaded: true,
       };
-    case GET_DATA_FROM_GITHUB_API:
+    case SET_DATA_FROM_GITHUB_API:
       return {
         ...state,
         data: action.payload,
         isLoaded: true,
       };
-    case GET_ERROR_FROM_GITHUB_API:
+    case SET_ERROR_FROM_GITHUB_API:
       return {
         ...state,
         isLoaded: true,
         error: action.payload,
       };
-    case SORT_DATA:
+    case SET_SORTED_DATA:
       return {
         ...state,
         data: action.payload.data,
-        sort: action.payload.sort,
+        sortDirection: action.payload.sortDirection,
         sortColumnName: action.payload.sortField,
       };
     default: return state;

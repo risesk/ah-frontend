@@ -1,4 +1,10 @@
 @import url('../public/vendor/fonts/fonts.css');
+
+#root {
+  height: 100vh;
+  display: flex;
+}
+
 .app {
   margin: 0 auto;
   width: 100%;
@@ -21,6 +27,11 @@
   text-align: center;
   font-size: 20px;
   line-height: 24px;
+}
+
+#root .app__spiner {
+  margin: 0 auto;
+  align-self: center;
 }
 
 

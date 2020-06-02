@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import './app.css';
-import Table from './Components/Table/Table';
+import Table from './Components/Table/Table.jsx';
+import Spin from './Components/Spin/Spin.jsx';
 import {
-  getDataFromLocalStorage,
-  getDataFromGthubApi,
-  getErrorFromGthubApi,
-  sortData,
+  setDataFromLocalStorage,
+  setDataFromGthubApi,
+  setErrorFromGthubApi,
+  setSortedData,
 } from './actions/TableActions';
+
+const url = 'https://raw.githubusercontent.com/blmzv/ah-frontend-intern/master/profiles.json';
 
 class App extends Component {
   constructor(props) {
@@ -18,39 +22,42 @@ class App extends Component {
   componentDidMount() {
     const appData = JSON.parse(localStorage.getItem('appData'));
     if (appData) {
-      return this.props.getDataFromLocalStorage(appData);
+      this.props.setDataFromLocalStorage(appData);
+    } else {
+      this.getDataFromGithub();
     }
-    return fetch('https://raw.githubusercontent.com/blmzv/ah-frontend-intern/master/profiles.json')
-      .then((res) => res.json())
-      .then(
-        (res) => {
-          this.props.getDataFromGthubApi(res);
-        },
-        (err) => {
-          this.props.getErrorFromGthubApi(err);
-        },
-      );
+  }
+
+  async getDataFromGithub() {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      this.props.setDataFromGthubApi(data);
+    } catch (err) {
+      this.props.setErrorFromGthubApi(err);
+    }
   }
 
   onSort(sortField) {
-    const sort = this.props.sort === 'asc' ? 'desc' : 'asc';
-    const data = this.sortProfiles(sortField, sort);
-    this.props.sortData({ data, sort, sortField });
+    const sortDirection = this.props.sortDirection === 'asc' ? 'desc' : 'asc';
+    const data = this.sortProfiles(sortField, sortDirection);
+
+    this.props.setSortedData({ data, sortDirection, sortField });
     localStorage.setItem('appData', JSON.stringify({
       data,
-      sort,
+      sortDirection,
       sortColumnName: sortField,
     }));
   }
 
-  sortProfiles(sortField, sort) {
+  sortProfiles(sortField, sortDirection) {
     const cloneData = this.props.data.slice();
     // Удаляем пробелы и скобки из сортируемого поля.
     const regExp = /[ )(]/g;
     const getSortParam = (profile) => profile[sortField].toLowerCase().replace(regExp, '');
 
     return cloneData.sort((profile1, profile2) => {
-      if (sort === 'asc') {
+      if (sortDirection === 'asc') {
         return getSortParam(profile1) > getSortParam(profile2) ? 1 : -1;
       }
       return getSortParam(profile1) < getSortParam(profile2) ? 1 : -1;
@@ -58,20 +65,21 @@ class App extends Component {
   }
 
   render() {
-    const { error, isLoaded } = this.props;
+    const { error, isLoaded, data, sortDirection, sortColumnName } = this.props;
     if (error) {
       return <div>Ошибка: {error.message}</div>;
     } if (!isLoaded) {
-      return <div>Загрузка...</div>;
+      return <Spin mix='app__spiner' />;
     }
+
     return (
       <div className='app'>
         <h1 className='app__title'>Профили пользователей</h1>
         <p className='app__text'>Кликни на заголовок колонки, чтобы отсортировать таблицу</p>
         <Table
-          data={this.props.data}
-          sort={this.props.sort}
-          sortColumnName={this.props.sortColumnName}
+          data={data}
+          sortDirection={sortDirection}
+          sortColumnName={sortColumnName}
           onSort={this.onSort}
         />
       </div>
@@ -79,13 +87,25 @@ class App extends Component {
   }
 }
 
+App.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  sortDirection: PropTypes.oneOf(['asc', 'desc', '']),
+  sortColumnName: PropTypes.string,
+  isLoaded: PropTypes.bool.isRequired,
+  error: PropTypes.object,
+  setDataFromLocalStorage: PropTypes.func.isRequired,
+  setDataFromGthubApi: PropTypes.func.isRequired,
+  setErrorFromGthubApi: PropTypes.func.isRequired,
+  setSortedData: PropTypes.func.isRequired,
+};
+
 const mapStateToProps = (state) => ({ ...state });
 
 const mapDispatchToProps = {
-  getDataFromLocalStorage,
-  getDataFromGthubApi,
-  getErrorFromGthubApi,
-  sortData,
+  setDataFromLocalStorage,
+  setDataFromGthubApi,
+  setErrorFromGthubApi,
+  setSortedData,
 };
 
 export default connect(

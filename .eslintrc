@@ -6,8 +6,12 @@
     }
   },
   "rules": {
+    "object-curly-newline": ["warn", {
+      "ObjectExpression": { "multiline": true },
+      "ObjectPattern": { "multiline": true }
+    }],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    "operator-linebreak": ["error", "after"],
+    "operator-linebreak": ["warn", "before"],
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "warn"
   },
